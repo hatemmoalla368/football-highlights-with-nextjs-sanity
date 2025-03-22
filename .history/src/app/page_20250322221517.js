@@ -1,4 +1,3 @@
-// /src/app/page.js
 import Blog from '../components/Blog';
 import { client } from '@/sanity/lib/client';
 
@@ -15,12 +14,12 @@ async function getmoreposts(start, end) {
     slug,
     content,
     video{
-      asset-> {
-        playbackId,
-        assetId,
-        filename,
-      }
+    asset-> {
+      playbackId,
+      assetId,
+      filename,
     }
+  }
     thumbnail {
       asset-> {
         url
@@ -32,8 +31,8 @@ async function getmoreposts(start, end) {
   return posts;
 }
 
-// Fetch initial posts
-const getinitialposts = async () => {
+// Fetch initial posts at runtime
+export async function getServerSideProps() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const url = `${baseUrl}/api/post?offset=0&limit=${LOAD_MORE_STEP}`;
   console.log('Fetching from:', url);
@@ -45,22 +44,28 @@ const getinitialposts = async () => {
     }
     const data = await response.json();
     console.log('data of initial posts', data);
-    return data; // Return the data object
+    return {
+      props: {
+        initialPosts: data.posts,
+        total: data.total,
+      },
+    };
   } catch (error) {
     console.error('Error fetching posts:', error);
-    return { posts: [], total: 0 }; // Return an empty array and total in case of error
+    return {
+      props: {
+        initialPosts: [],
+        total: 0,
+      },
+    };
   }
-};
+}
 
 export const metadata = {
   title: 'ملخص المباريات',
 };
 
-export default async function Home() {
-  const initial = await getinitialposts();
-  const initialPosts = initial.posts;
-  const total = initial.total;
-
+export default function Home({ initialPosts, total }) {
   console.log('all posts', initialPosts);
   return (
     <Blog

@@ -15,12 +15,12 @@ async function getmoreposts(start, end) {
     slug,
     content,
     video{
-      asset-> {
-        playbackId,
-        assetId,
-        filename,
-      }
+    asset-> {
+      playbackId,
+      assetId,
+      filename,
     }
+  }
     thumbnail {
       asset-> {
         url
@@ -34,7 +34,7 @@ async function getmoreposts(start, end) {
 
 // Fetch initial posts
 const getinitialposts = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL  ;
   const url = `${baseUrl}/api/post?offset=0&limit=${LOAD_MORE_STEP}`;
   console.log('Fetching from:', url);
 
@@ -45,23 +45,22 @@ const getinitialposts = async () => {
     }
     const data = await response.json();
     console.log('data of initial posts', data);
-    return data; // Return the data object
+    return data; // Return only the posts array
   } catch (error) {
     console.error('Error fetching posts:', error);
-    return { posts: [], total: 0 }; // Return an empty array and total in case of error
+    return []; // Return an empty array in case of error
   }
 };
-
 export const metadata = {
   title: 'ملخص المباريات',
 };
 
 export default async function Home() {
   const initial = await getinitialposts();
-  const initialPosts = initial.posts;
-  const total = initial.total;
+  const initialPosts = initial.posts
+  const total = initial.total
 
-  console.log('all posts', initialPosts);
+console.log("all posts",initialPosts )
   return (
     <Blog
       initialPosts={initialPosts}
