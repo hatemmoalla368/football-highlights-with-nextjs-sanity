@@ -47,7 +47,7 @@ const getinitialposts = async () => {
         assetId,
         filename,
       }
-    },
+    }
     thumbnail {
       asset-> {
         url
